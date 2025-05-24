@@ -188,22 +188,41 @@ function setupSocketEventHandlers() {
         }
     });
 
-    socket.on("playerReady", (socketId, status) => {
+    socket.on("playerStatusChanged", (socketId, status) => {
         const li = playerList?.querySelector(`#player-${socketId}`);
         if (li) {
-            li.style.backgroundColor = status === 'ready' ? 'green' : 'red';
+            switch (status) {
+                case 'waiting':
+                    li.style.backgroundColor = 'red';
+                    break;
+                case 'ready':
+                    li.style.backgroundColor = 'green';
+                    break;
+                case 'playing':
+                    li.style.backgroundColor = 'blue';
+                    break;
+                case 'eliminated':
+                    li.style.backgroundColor = 'gray';
+                    break;
+            }
             console.log(`Player ${socketId} is ${status}`);
         }
     });
 
     socket.on("startRound", () => {
+        console.log('Round started');
         setMessage('New round started');
         if (roundStateDiv) roundStateDiv.removeAttribute('hidden');
+        if (playerList) playerList.querySelectorAll('li').forEach((li) => li.style.backgroundColor = 'blue');
     });
 
     socket.on("endRound", (socketId) => {
         const playerEl = document.querySelector(`#player-${socketId}`);
-        const playerName = playerEl ? playerEl.innerText : 'Unknown';
+        const playerName = playerEl ? playerEl.innerText : '';
+
+        console.log(`Round ended. Player ${playerName} won the round`);
+
+        if (playerList) playerList.querySelectorAll('li').forEach((li) => li.style.backgroundColor = 'red');
 
         if (submitWordForm) submitWordForm.setAttribute('hidden', '');
         if (timer) timer.innerHTML = '';
@@ -222,12 +241,10 @@ function setupSocketEventHandlers() {
         if (turn) turn.innerHTML = `${playerName}'s turn`;
         if (timer) timer.innerHTML = '15';
 
-        // Clear existing timer
         if (timerInterval) {
             clearInterval(timerInterval);
         }
 
-        // Start new timer
         let timeLeft = 15;
         timerInterval = setInterval(() => {
             timeLeft--;
@@ -249,15 +266,6 @@ function setupSocketEventHandlers() {
         }
 
         console.log(`It's ${playerName}'s turn`);
-    });
-
-    socket.on("eliminatedPlayer", (socketId) => {
-        const playerLi = playerList.querySelector(`#player-${socketId}`);
-        if (playerLi) {
-            const playerName = playerLi.innerText;
-            playerLi.style.backgroundColor = 'blue';
-            setMessage(`${playerName} was eliminated`);
-        }
     });
 
     socket.on("newWord", (word) => {
