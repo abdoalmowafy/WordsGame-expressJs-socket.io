@@ -18,11 +18,20 @@
         body {
             text-align: center;
         }
+
+        #connection-status {
+            border-radius: 50%;
+            background-color: red;
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 
 <body>
-    <h1>test</h1>
+    <h1>test <span id="connection-status"></span></h1>
     <button id="showChangeName">Change name</button>
     <form id="changeName" hidden style="background-color: aqua;">
         <input type="text" name="name" placeholder="new player name">

@@ -4,7 +4,7 @@ let currentRoomName;
 let socket;
 let timerInterval;
 
-// Global DOM element references
+const connectionStatusSpan = document.querySelector('#connection-status');
 const showChangeNameBtn = document.getElementById('showChangeName');
 const changeNameForm = document.getElementById('changeName');
 const joinRoomForm = document.getElementById('joinRoom');
@@ -128,6 +128,7 @@ function initializeEventListeners() {
 function setupSocketEventHandlers() {
     socket.on('disconnect', (reason) => {
         console.log('Disconnected:', reason);
+        connectionStatusSpan.style.backgroundColor = 'red';
         setMessage('Disconnected from server');
     });
 
@@ -304,6 +305,7 @@ function tryConnect(URLs, index = 0) {
 
     socket.on("connect", () => {
         console.log(`Socket connected to: ${URLs[index]}`);
+        connectionStatusSpan.style.backgroundColor = 'green';
         setupSocketEventHandlers();
     });
 
