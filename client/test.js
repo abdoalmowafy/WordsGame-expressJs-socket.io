@@ -288,7 +288,9 @@ function tryConnect(URLs, index = 0) {
     console.log(`Trying to connect to: ${URLs[index]}`);
 
     socket = io(URLs[index], {
-        reconnectionDelay: 100,
+        reconnectionDelay: 50,
+        reconnectionAttempts: Infinity,
+        timeout: 500,
         transports: ['websocket', 'polling']
     });
 
