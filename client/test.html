@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+    <style>
+        form {
+            padding: 30px 0px;
+            border-bottom: 1px solid black;
+        }
+
+        button {
+            margin: 10px;
+        }
+
+        body {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>test</h1>
+    <button id="showChangeName">Change name</button>
+    <form id="changeName" hidden style="background-color: aqua;">
+        <input type="text" name="name" placeholder="new player name">
+        <button type="submit">Submit</button>
+    </form>
+
+    <form id="createRoom">
+        <input type="text" name="name" placeholder="new room name">
+        <button type="submit">Submit</button>
+    </form>
+
+    <form id="joinRoom">
+        <input type="text" name="name" placeholder="room name">
+        <button type="submit">Submit</button>
+    </form>
+
+
+    <ul id="players"></ul>
+
+    <button id="ready" hidden>ready</button>
+
+    <button id="leaveRoom" hidden>leave room</button>
+
+    <h1 id="room-name">Not in a room</h1>
+    <div id="round-state" hidden>
+        <h1 id="turn"></h1>
+        <h1 id="timer"></h1>
+        <h2 id="currentWord"></h2>
+    </div>
+    <h4 id="message"></h4>
+    <form id="submitWord" hidden>
+        <input type="text" name="name" placeholder="word">
+        <button type="submit">Submit</button>
+    </form>
+
+
+    <script src="test1.js" type="module"></script>
+</body>
+
+</html>
