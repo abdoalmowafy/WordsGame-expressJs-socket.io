@@ -80,11 +80,10 @@ export async function tryStartRound(io: Server, socket: Socket, roomName: string
 export async function eliminatePlayer(io: Server, socket: Socket, playerId: string, roomName: string) {
     if (currentTimeout) clearTimeout(currentTimeout);
 
-    await redis.hSet(`player-${playerId}`, { status: "waiting" });
+    await redis.hSet(`player-${playerId}`, { status: "eliminated" });
+    io.to(roomName).emit("playerStatusChanged", socket.id, "eliminated");
     await redis.sRem(`inGamePlayers-${roomName}`, playerId);
     await redis.sRem(`inGameSmallRound-${roomName}`, playerId);
-
-    io.to(roomName).emit("eliminatedPlayer", playerId);
 
     await findSetNextPlayerRandomly(io, socket, roomName);
 
@@ -107,7 +106,6 @@ async function endRound(io: Server, socket: Socket, roomName: string) {
     const roomPlayers = await redis.sMembers(`roomPlayers-${roomName}`);
     roomPlayers.forEach(async (playerId) => {
         await redis.hSet(`player-${playerId}`, { status: "waiting" });
-        io.to(roomName).emit("playerReady", playerId, "waiting");
     });
 }
 

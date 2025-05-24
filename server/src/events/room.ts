@@ -29,9 +29,14 @@ async function joinRoom(io: Server, socket: Socket, roomName: string) {
     const playerName = await redis.hGet(`player-${socket.id}`, "name");
     socket.to(roomName).emit("joinedRoom", socket.id, playerName);
 
-    for (const playerId of await redis.sMembers(`roomPlayers-${roomName}`)) {
+    const roomPlayers = await redis.sMembers(`roomPlayers-${roomName}`);
+    roomPlayers.forEach(async (playerId) => {
         socket.emit("joinedRoom", playerId, await redis.hGet(`player-${playerId}`, "name"));
-    }
+
+        const playerStatus = await redis.hGet(`player-${playerId}`, "status");
+
+        socket.emit("playerStatusChanged", playerId, playerStatus);
+    });
 };
 
 export async function leaveRoom(io: Server, socket: Socket) {

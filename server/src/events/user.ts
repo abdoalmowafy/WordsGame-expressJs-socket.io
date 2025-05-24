@@ -35,7 +35,7 @@ const userEvents = (io: Server, socket: Socket) => {
     socket.on("changeName", async (name: string) => {
         name = name.trim();
 
-        if (name.length < 3) {
+        if (name.length < 1) {
             socket.emit("error", "Name must be at least 3 characters long");
             return;
         }
@@ -64,7 +64,7 @@ const userEvents = (io: Server, socket: Socket) => {
 
         await redis.hSet(`player-${socket.id}`, { status: playerNewStatus });
 
-        io.to(roomName).emit("playerReady", socket.id, playerNewStatus);
+        io.to(roomName).emit("playerStatusChanged", socket.id, playerNewStatus);
 
         if (playerNewStatus === "ready")
             await tryStartRound(io, socket, roomName);
