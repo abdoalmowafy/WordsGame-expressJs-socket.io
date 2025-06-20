@@ -8,6 +8,11 @@ let currentTimeout: NodeJS.Timeout;
 async function submitWord(io: Server, socket: Socket, roomName: string, newWord: string) {
     newWord = newWord.trim().toLowerCase().replace(/[^a-z]/g, '');
 
+    if (newWord.length < 2) {
+        socket.emit("wrongWord", newWord);
+        return;
+    }
+
     const isValid = await wordIsValid(newWord);
     console.log(`API says: Word ${newWord} is ${isValid}`);
     if (!isValid) {
@@ -26,6 +31,9 @@ async function submitWord(io: Server, socket: Socket, roomName: string, newWord:
             return;
         }
     }
+
+    if (currentTimeout) clearTimeout(currentTimeout);
+
     await redis.sAdd(`usedWords-${roomName}`, newWord);
     await redis.hSet(`round-${roomName}`, { word: newWord });
     io.to(roomName).emit("newWord", newWord);

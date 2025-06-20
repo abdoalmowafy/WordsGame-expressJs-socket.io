@@ -55,7 +55,7 @@ export async function leaveRoom(io: Server, socket: Socket) {
     });
 
     const roomPlayers = await redis.sMembers(`roomPlayers-${roomName}`);
-    if (roomPlayers.length === 1) {
+    if (roomPlayers.length <= 1) {
         await redis.sRem("rooms", roomName);
         await redis.del(`room-${roomName}`);
         await redis.del(`roomPlayers-${roomName}`);
